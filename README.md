@@ -4,4 +4,4 @@ IPv4 & IPv6 Subnet Size Reference Table
 
 | IPv4                                      | IPv6                                      |
 |-------------------------------------------|-------------------------------------------|
-| [![IPv4](https://img.shields.io/badge/IPv4-%23D2B3EE?style=for-the-badge&logo=internet-explorer&logoColor=white)](https://technoindian555.github.io/Tes/assets/IPv4.html) | [![IPv6](https://img.shields.io/badge/IPv6-%238A2BE2?style=for-the-badge&logo=internet-explorer&logoColor=white)](https://technoindian555.github.io/Test/assets/IPv6.html) |
+| [![IPv4](https://img.shields.io/badge/IPv4-%23B487DE?style=for-the-badge&logo=internet-explorer&logoColor=white)](https://technoindian555.github.io/Tes/assets/IPv4.html) | [![IPv6](https://img.shields.io/badge/IPv6-%238A2BE2?style=for-the-badge&logo=internet-explorer&logoColor=white)](https://technoindian555.github.io/Test/assets/IPv6.html) |
