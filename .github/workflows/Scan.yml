@@ -1,13 +1,9 @@
+name: AB DIKHEGA 100%
 
-name: 20 JOBS ABHI DIKHEGA
-
-on: workflow_dispatch
+on: [workflow_dispatch, push]
 
 jobs:
   dikhega:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        id: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
     steps:
-      - run: echo "🔥 JOB #${{ matrix.id }} CHAL GAYA → $(date +%S.%3N) sec"
+      - run: echo "BHAI DIKH GAYA 🔥 $(date)"
