@@ -2,6 +2,9 @@ name: IPv4 Scan
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
     inputs:
       cidr:
         default: "104.17.0.0/24"
@@ -12,9 +15,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v6
         with: {python-version: "3.x"}
         
       - name: Install dependencies
@@ -23,8 +26,12 @@ jobs:
       - name: Run IPv4_Scan.py
         run: python IPv4_Scan.py "${{ github.event.inputs.cidr }}"
 
+      - name: Read Logs
+        id: body
+        run: echo "BODY<<EOF" >> $GITHUB_ENV && cat *_Logs.txt >> $GITHUB_ENV && echo "EOF" >> $GITHUB_ENV
+
       - uses: softprops/action-gh-release@v2
         with:
           tag_name: "104.17.0.0"
-          body: echo "BODY<<EOF" >> $GITHUB_ENV && cat *_Logs.txt >> $GITHUB_ENV && echo "EOF" >> $GITHUB_ENV
+          body: ${{ env.BODY }}
           files: "*_IPs.txt"
