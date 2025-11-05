@@ -1,15 +1,22 @@
 name: 256 JOBS
 
-on: [workflow_dispatch]
+on:
+  workflow_dispatch:   # Run manually from the UI
 
 jobs:
   boom:
     runs-on: ubuntu-latest
     strategy:
-      matrix:
-        id: ${{ fromJSON('[' + join(range(1, 257), ',') + ']') }}
       max-parallel: 256
+      matrix:
+        id: ${{ steps.generate_ids.outputs.ids }}
     steps:
+      - name: Generate 1..256 IDs
+        id: generate_ids
+        run: |
+          IDS=$(seq -s, 1 256)
+          echo "ids=[$IDS]" >> $GITHUB_OUTPUT
+
       - name: MAIN HU ID ${{ matrix.id }}
         run: |
           echo "Job #${{ matrix.id }} START → $(date +%S.%3N)"
