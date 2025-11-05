@@ -148,17 +148,16 @@ def OUTPUT_Logs(CIDR, START, END, TOTAL, Respond_HOST):
     CIDR_STRING = CIDR if isinstance(CIDR, str) else CIDR[0]
 
     Logs = (
-f"""**🔍 {CIDR_STRING} IPv4 CIDR Scan Report**
+f"""🔍 {CIDR_STRING} IPv4 CIDR Scan Report
+-------
 
--------------------------------------------------------------
-|       START IP          |         END IP                  |
--------------------------------------------------------------
-|      {START:<15} |     {END:<15}      |
--------------------------------------------------------------
-|     TOTAL IPs → {TOTAL:<10}                      |
--------------------------------------------------------------
-|  RESPONDED IPs → {Respond_HOST:<10}              |
--------------------------------------------------------------
+| START IP | END IP |
+|------------------|------------------|
+| {START} | {END} |
+
+| TOTAL IPs | RESPOND IPs |
+|------------------|------------------|
+| {TOTAL} | {Respond_HOST} |
 """
     )
 
