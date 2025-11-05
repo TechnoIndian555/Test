@@ -5,11 +5,13 @@ on: [workflow_dispatch]
 jobs:
   boom:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        id: ${{ fromJSON('[' + join(range(1, 257), ',') + ']') }}
+      max-parallel: 256
     steps:
-      - name: Run 256 jobs in a loop
+      - name: MAIN HU ID ${{ matrix.id }}
         run: |
-          for i in $(seq 1 256); do
-            echo "Job #$i START → $(date +%S.%3N)"
-            sleep 3
-            echo "Job #$i DONE  → $(date +%S.%3N)"
-          done
+          echo "Job #${{ matrix.id }} START → $(date +%S.%3N)"
+          sleep 3
+          echo "Job #${{ matrix.id }} DONE  → $(date +%S.%3N)"
