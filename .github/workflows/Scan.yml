@@ -16,15 +16,15 @@ jobs:
 
       - uses: actions/setup-python@v4
         with: {python-version: "3.x"}
+        
+      - name: Install dependencies
+        run: pip install requests
 
-      - run: pip install requests && python IPv4_Scan.py "${{ github.event.inputs.cidr }}"
-
-      - name: Read logs for release body
-        id: body
-        run: echo "BODY<<EOF" >> $GITHUB_ENV && cat *_Logs.txt >> $GITHUB_ENV && echo "EOF" >> $GITHUB_ENV
+      - name: Run IPv4_Scan.py
+        run: python IPv4_Scan.py "${{ github.event.inputs.cidr }}"
 
       - uses: softprops/action-gh-release@v2
         with:
           tag_name: "104.17.0.0"
-          body: ${{ env.BODY }}
+          body: echo "BODY<<EOF" >> $GITHUB_ENV && cat *_Logs.txt >> $GITHUB_ENV && echo "EOF" >> $GITHUB_ENV
           files: "*_IPs.txt"
