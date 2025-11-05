@@ -1,28 +1,12 @@
 name: 256 JOBS
-
-on:
-  workflow_dispatch:
-
+on: workflow_dispatch:
 jobs:
-  generate:
-    runs-on: ubuntu-latest
-    outputs:
-      matrix: ${{ steps.set.outputs.matrix }}
-    steps:
-      - id: set
-        run: |
-          echo 'matrix={"id":['$(seq -s, 1 256)']}' >> $GITHUB_OUTPUT
-
   boom:
-    needs: generate
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 256
-      matrix:
-        id: ${{ fromJSON(needs.generate.outputs.matrix).id }}
+      matrix: ${{ fromJSON(steps.set.outputs.matrix) }}
     steps:
-      - name: "Job #${{ matrix.id }}"
-        run: |
-          echo "START #${{ matrix.id }} → $(date +%S.%3N)"
-          sleep 3
-          echo "DONE  #${{ matrix.id }} → $(date +%S.%3N)"
+      - id: set
+        run: echo 'matrix={"id":['"$(seq -w -s, 1 256)"']}' >> $GITHUB_OUTPUT
+      - run: echo "BOOM #${{ matrix.id }} @ $(date +%S.%3N)"
