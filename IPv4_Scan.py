@@ -145,12 +145,25 @@ def IP_SCANNER(START, HOSTS, PORTS):
 # ————— 𝐎𝐔𝐓𝐏𝐔𝐓 𝐋𝐨𝐠𝐬 —————
 def OUTPUT_Logs(CIDR, START, END, TOTAL, Respond_HOST):
 
+    CIDR_STRING = CIDR if isinstance(CIDR, str) else CIDR[0]
+
+    Logs = (
+f"""**🔍 {CIDR_STRING} IPv4 CIDR Scan Report**
+
+-------------------------------------------------------------
+|       START IP          |         END IP                  |
+-------------------------------------------------------------
+|      {START:<15} |     {END:<15}      |
+-------------------------------------------------------------
+|     TOTAL IPs → {TOTAL:<10}                      |
+-------------------------------------------------------------
+|  RESPONDED IPs → {Respond_HOST:<10}              |
+-------------------------------------------------------------
+"""
+    )
+
     with open(f"{START}_Logs.txt", "w") as f:
-        f.write(f"🔍 {CIDR} IPv4 CIDR Scan Report\n\n")
-        f.write(f"START IP    → {START}\n")
-        f.write(f"END IP      → {END}\n")
-        f.write(f"TOTAL IPs        → {TOTAL}\n")
-        f.write(f"RESPONDED IPs    → {Respond_HOST}\n")
+        f.write(Logs)
 
 
 # ————— 𝐄𝐱𝐞𝐜𝐮𝐭𝐞 𝐒𝐜𝐫𝐢𝐩𝐭 —————
