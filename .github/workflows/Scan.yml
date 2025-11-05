@@ -10,15 +10,25 @@ jobs:
   scan:
     permissions: {contents: write}
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-python@v4
         with: {python-version: "3.x"}
+
       - run: pip install requests && python IPv4_Scan.py "${{ github.event.inputs.cidr }}"
+
+      - name: Read tag
+        id: tag
+        run: echo "TAG=$(cat tag.txt)" >> $GITHUB_ENV
+
+      - name: Read logs for release body
+        id: body
+        run: echo "BODY<<EOF" >> $GITHUB_ENV && cat *_Logs.txt >> $GITHUB_ENV && echo "EOF" >> $GITHUB_ENV
+
       - uses: softprops/action-gh-release@v2
         with:
-          tag_name: scan-latest
-          body_path: "*_Logs.txt"   # ← quoted to avoid YAML anchor parsing
-          files: |
-            *_IPs.txt
-            *_Logs.txt
+          tag_name: ${{ env.TAG }}
+          body: ${{ env.BODY }}
+          files: "*_IPs.txt"
