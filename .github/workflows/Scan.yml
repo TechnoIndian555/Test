@@ -10,7 +10,7 @@ jobs:
       matrix: ${{ steps.set.outputs.matrix }}
     steps:
       - id: set
-        run:
+        run: |
           echo 'matrix={"id":['$(seq -s, 1 256)']}' >> $GITHUB_OUTPUT
 
   boom:
@@ -22,7 +22,7 @@ jobs:
         id: ${{ fromJSON(needs.generate.outputs.matrix).id }}
     steps:
       - name: "Job #${{ matrix.id }}"
-        run:
+        run: |
           echo "START #${{ matrix.id }} → $(date +%S.%3N)"
           sleep 3
           echo "DONE  #${{ matrix.id }} → $(date +%S.%3N)"
