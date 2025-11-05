@@ -135,7 +135,7 @@ def IP_SCANNER(HOSTS, PORTS):
 # ————— 𝐄𝐱𝐞𝐜𝐮𝐭𝐞 𝐒𝐜𝐫𝐢𝐩𝐭 —————
 if __name__ == '__main__':
 
-    CIDR = "0.0.0.0/0"
+    CIDR = "104.17.0.0/24"
 
     HOSTS = isCIDR(CIDR)
 
