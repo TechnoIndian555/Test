@@ -1,4 +1,4 @@
-import ipaddress, threading, requests, urllib3, time, sys, os
+import ipaddress, threading, requests, argparse, urllib3, time, sys, os
 
 from concurrent.futures import as_completed, ThreadPoolExecutor
 
@@ -30,7 +30,15 @@ def isCIDR(CIDR):
     try:
         IP_Range = ipaddress.ip_network(CIDR, strict=False)
 
-        return [str(IP) for IP in IP_Range]
+        IP_List = [str(IP) for IP in IP_Range]
+
+        START_IP = str(IP_Range.network_address)
+
+        END_IP = str(IP_Range.broadcast_address)
+
+        TOTAL_IPs = len(IP_List)
+
+        return IP_List, START_IP, END_IP, TOTAL_IPs
 
     except ValueError as e:
         print(f'\n[ ERROR ] Invalid CIDR / HOST : {e} ✘\n')
@@ -73,7 +81,7 @@ def isRequest(HOST, PORT):
 
 
 # ————— 𝐈𝐏 𝐒𝐂𝐀𝐍𝐍𝐄𝐑 —————
-def IP_SCANNER(HOSTS, PORTS):
+def IP_SCANNER(START, HOSTS, PORTS):
 
     Total_HOST = len(HOSTS) * len(PORTS)
 
@@ -81,7 +89,7 @@ def IP_SCANNER(HOSTS, PORTS):
 
     RESPOND = {}
 
-    with ThreadPoolExecutor(max_workers=100) as executor:
+    with ThreadPoolExecutor(max_workers=8) as executor:
 
         is_Request = {}
 
@@ -118,7 +126,7 @@ def IP_SCANNER(HOSTS, PORTS):
 
     # ————— 𝐑𝐄𝐒𝐏𝐎𝐍𝐒𝐄 𝐎𝐔𝐓𝐏𝐔𝐓 —————
 
-    OUTPUT_PATH = "IPs.txt"
+    OUTPUT_PATH = f"{START}_IPs.txt"
 
     if RESPOND:
         with open(OUTPUT_PATH, 'a') as file:
@@ -129,16 +137,41 @@ def IP_SCANNER(HOSTS, PORTS):
             for HOST, SERVER in RESPOND.items():
                 file.write(f"{HOST:<16}  |  {SERVER}\n")
 
-        print(f"\n[✓] Results Saved ➢ {OUTPUT_PATH}\n")
+        print(f"\n\n[✓] Results Saved ➢ {OUTPUT_PATH}\n")
+
+    return Respond_HOST
+
+
+# ————— 𝐎𝐔𝐓𝐏𝐔𝐓 𝐋𝐨𝐠𝐬 —————
+def OUTPUT_Logs(CIDR, START, END, TOTAL, Respond_HOST):
+
+    with open(f"{START}_Logs.txt", "w") as f:
+        f.write(f"🔍 {CIDR} IPv4 CIDR Scan Report\n\n")
+        f.write(f"START IP    → {START}\n")
+        f.write(f"END IP      → {END}\n")
+        f.write(f"TOTAL IPs        → {TOTAL}\n")
+        f.write(f"RESPONDED IPs    → {Respond_HOST}\n")
 
 
 # ————— 𝐄𝐱𝐞𝐜𝐮𝐭𝐞 𝐒𝐜𝐫𝐢𝐩𝐭 —————
 if __name__ == '__main__':
+    
+    parser = argparse.ArgumentParser(description="IPv4 CIDR Scanner")
 
-    CIDR = "104.17.0.0/24"
+    parser.add_argument(
+        'CIDRs',
+        nargs='*',
+        type=str,
+        help=f'➢ CIDR ➸ 127.0.0.0/24 '
+             f'➢ Multi CIDR ➸ 127.0.0.0/24 104.0.0.0/24'
+    )
 
-    HOSTS = isCIDR(CIDR)
+    args = parser.parse_args()
 
-    PORTS = ["80"]
+    if args.CIDRs:
+        for CIDR in args.CIDRs:
+            HOSTS, START, END, TOTAL = isCIDR(CIDR)
 
-    IP_SCANNER(HOSTS, PORTS)
+            Respond_HOST = IP_SCANNER(START, HOSTS, PORTS = ["80"])
+
+            OUTPUT_Logs(args.CIDRs, START, END, TOTAL, Respond_HOST)
