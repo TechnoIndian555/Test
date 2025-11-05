@@ -1,28 +1,24 @@
-name: 256 JOBS
+name: IPv4 Scan
 
 on:
   workflow_dispatch:
+    inputs:
+      cidr:
+        default: "104.17.0.0/24"
 
 jobs:
-  generate:
+  scan:
+    permissions: {contents: write}
     runs-on: ubuntu-latest
-    outputs:
-      matrix: ${{ steps.set.outputs.matrix }}
     steps:
-      - id: set
-        run: |
-          echo 'matrix={"id":['$(seq -s, 1 256)']}' >> $GITHUB_OUTPUT
-
-  boom:
-    needs: generate
-    runs-on: ubuntu-latest
-    strategy:
-      max-parallel: 256
-      matrix:
-        id: ${{ fromJSON(needs.generate.outputs.matrix).id }}
-    steps:
-      - name: "Job #${{ matrix.id }}"
-        run: |
-          echo "START #${{ matrix.id }} → $(date +%S.%3N)"
-          sleep 3
-          echo "DONE  #${{ matrix.id }} → $(date +%S.%3N)"
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v4
+        with: {python-version: "3.x"}
+      - run: pip install requests && python IPv4_Scan.py "${{ github.event.inputs.cidr }}"
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: scan-latest
+          body_path: *_Logs.txt
+          files: |
+            *_IPs.txt
+            *_Logs.txt
