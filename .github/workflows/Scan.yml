@@ -14,7 +14,7 @@ jobs:
       - name: Generate 1..256 IDs
         id: generate_ids
         run: |
-          IDS=$(seq -s, 1 256)
+          IDS=$(seq -s, 1, 256)
           echo "ids=[$IDS]" >> $GITHUB_OUTPUT
 
       - name: MAIN HU ID ${{ matrix.id }}
