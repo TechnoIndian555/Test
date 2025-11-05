@@ -19,16 +19,12 @@ jobs:
 
       - run: pip install requests && python IPv4_Scan.py "${{ github.event.inputs.cidr }}"
 
-      - name: Read tag
-        id: tag
-        run: echo "TAG=$(cat tag.txt)" >> $GITHUB_ENV
-
       - name: Read logs for release body
         id: body
         run: echo "BODY<<EOF" >> $GITHUB_ENV && cat *_Logs.txt >> $GITHUB_ENV && echo "EOF" >> $GITHUB_ENV
 
       - uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ env.TAG }}
+          tag_name: "104.17.0.0"
           body: ${{ env.BODY }}
           files: "*_IPs.txt"
