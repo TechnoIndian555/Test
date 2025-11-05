@@ -1,4 +1,4 @@
-name: IPv4 CIDR Scan
+name: Scan IPv4 CIDR Ranges
 
 on:
   workflow_dispatch:
@@ -7,10 +7,22 @@ on:
       - main
 
 jobs:
-  scan:
-    permissions:
-      contents: write
+  generate-matrix:
     runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.gen.outputs.matrix }}
+    steps:
+      - id: gen
+        run: |
+          echo "matrix={\"octet\":[$(seq -s, 0 255)]}" >> $GITHUB_OUTPUT
+
+  scan:
+    needs: generate-matrix
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 256
+      matrix:
+        octet: ${{ fromJSON(needs.generate-matrix.outputs.matrix).octet }}
 
     steps:
       - name: Checkout repo
@@ -20,14 +32,18 @@ jobs:
         uses: actions/setup-python@v6
         with:
           python-version: "3.x"
-        
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install requests
 
-      - name: Run IPv4_Scan.py
-        run: python IPv4_Scan.py "104.17.0.0/24"
+      - name: Define CIDR
+        id: cidr
+        run: echo "CIDR=104.17.${{ matrix.octet }}.0/24" >> $GITHUB_ENV
+
+      - name: Run IPv4 scan
+        run: python IPv4_Scan.py "${{ env.CIDR }}"
 
       - name: Read Logs
         id: body
@@ -39,6 +55,6 @@ jobs:
       - name: Release OUTPUT
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: "104.17.0.0"
+          tag_name: "104.17.${{ matrix.octet }}.0"
           body: ${{ env.BODY }}
           files: "*_IPs.txt"
