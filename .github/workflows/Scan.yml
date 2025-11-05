@@ -2,9 +2,9 @@ name: IPv4 CIDR Scan
 
 on:
   workflow_dispatch:
-    inputs:
-      cidr:
-        default: "104.17.0.0/24"
+  push:
+    branches:
+      - main
 
 jobs:
   scan:
@@ -27,7 +27,7 @@ jobs:
           pip install requests
 
       - name: Run IPv4_Scan.py
-        run: python IPv4_Scan.py "${{ github.event.inputs.cidr }}"
+        run: python IPv4_Scan.py "104.17.0.0/24"
 
       - name: Read Logs
         id: body
