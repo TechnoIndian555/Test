@@ -8,5 +8,5 @@ jobs:
       matrix: ${{ fromJSON(steps.set.outputs.matrix) }}
     steps:
       - id: set
-        run: echo 'matrix={"id":['"$(seq -w -s, 1 256)"']}' >> $GITHUB_OUTPUT
+        run: echo 'matrix={"id":["'$(seq -w -s'","' 1 256)'"]}' >> $GITHUB_OUTPUT
       - run: echo "BOOM #${{ matrix.id }} @ $(date +%S.%3N)"
