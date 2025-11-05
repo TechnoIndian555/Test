@@ -1,5 +1,8 @@
 name: Scan IPv4 CIDR Ranges
 
+permissions:
+  contents: write
+
 on:
   workflow_dispatch:
   push:
@@ -58,3 +61,5 @@ jobs:
           tag_name: "104.17.${{ matrix.octet }}.0"
           body: ${{ env.BODY }}
           files: "*_IPs.txt"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
