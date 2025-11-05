@@ -18,7 +18,7 @@ jobs:
       - uses: softprops/action-gh-release@v2
         with:
           tag_name: scan-latest
-          body_path: *_Logs.txt
+          body_path: "*_Logs.txt"   # ← quoted to avoid YAML anchor parsing
           files: |
             *_IPs.txt
             *_Logs.txt
